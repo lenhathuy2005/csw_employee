@@ -15,24 +15,33 @@ public class EmployeeService {
         this.repo = repo;
     }
 
-    // 1. getEmployees: retrieve all employees in an array
+    // Lấy tất cả nhân viên
     public List<Employee> getEmployees() {
         return repo.findAll();
     }
 
-    // 2. addEmployees(Employee e): add a new employee record
+    // Thêm mới
     public Employee addEmployee(Employee e) {
-        if (repo.existsById(e.getId())) {
-            throw new RuntimeException("Employee ID already exists!");
+        // nếu muốn chặn trùng ID thì mở comment dưới:
+        // if (repo.existsById(e.getId())) {
+        //     throw new RuntimeException("Employee ID already exists!");
+        // }
+        return repo.save(e);
+    }
+
+    // Cập nhật
+    public Employee updateEmployee(Employee e) {
+        if (!repo.existsById(e.getId())) {
+            throw new RuntimeException("Không tìm thấy nhân viên ID = " + e.getId());
         }
         return repo.save(e);
     }
 
-    // 3. updateEmployee(Employee e): modify an existing employee record
-    public Employee updateEmployee(Employee e) {
-        if (!repo.existsById(e.getId())) {
-            throw new RuntimeException("Employee not found!");
+    // 🔥 XÓA
+    public void deleteEmployee(Long id) {
+        if (!repo.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy nhân viên ID = " + id);
         }
-        return repo.save(e);
+        repo.deleteById(id);
     }
 }
