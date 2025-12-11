@@ -6,11 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "employees") 
+@Table(name = "employees") // bảng "employees" trong MySQL
 public class Employee {
 
     @Id
-    private Long id;    
+    private Long id;    // nhập tay, không auto-increment
 
     @Column(nullable = false)
     private String name;
