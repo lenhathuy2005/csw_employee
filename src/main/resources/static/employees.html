@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
-    <title>Quản lý nhân viên</title>
+    <title>✨ Employee Web Service Demo ✨</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,26 +12,78 @@
         body {
             margin: 0;
             padding: 0;
-            background: #f3f4f6;
-            color: #111827;
+            min-height: 100vh;
+            /* Nền gradient nhiều màu */
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #a1c4fd 50%, #c2ffd8 75%, #fbc2eb 100%);
+            color: #0f172a;
+            display: flex;
+            justify-content: center;
         }
 
         .app-container {
-            max-width: 960px;
-            margin: 40px auto;
-            padding: 0 16px;
+            width: 100%;
+            max-width: 980px;
+            margin: 32px 16px;
         }
+
+        /* HEADER */
 
         .app-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 18px;
+            padding: 18px 20px;
+            border-radius: 18px;
+            /* Glassmorphism */
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.9);
+            box-shadow: 0 14px 35px rgba(15,23,42,0.25);
+        }
+
+        .app-title-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            background: conic-gradient(from 180deg, #fb7185, #fb923c, #facc15, #4ade80, #38bdf8, #a855f7, #fb7185);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(15,23,42,0.35);
+        }
+
+        .app-icon span {
+            font-size: 22px;
+        }
+
+        .app-title-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .app-title {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-title .tag {
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            color: #fff;
         }
 
         .subtitle {
@@ -39,56 +91,127 @@
             color: #6b7280;
         }
 
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.8);
+            color: #e5e7eb;
+            font-size: 12px;
+        }
+
+        .pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35);
+        }
+
+        /* CARD */
+
         .card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+            background: rgba(255,255,255,0.96);
+            border-radius: 18px;
+            padding: 20px 20px 18px;
             margin-bottom: 20px;
+            box-shadow: 0 18px 40px rgba(15,23,42,0.25);
+            border: 1px solid rgba(255,255,255,0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(244,114,182,0.28), transparent 55%),
+            radial-gradient(circle at bottom right, rgba(56,189,248,0.25), transparent 55%);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .card-inner {
+            position: relative;
+            z-index: 1;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .card-title {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        .card-title span.emoji {
+            font-size: 20px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: linear-gradient(135deg, #22c55e, #14b8a6);
+            color: #f9fafb;
+            box-shadow: 0 4px 10px rgba(22,163,74,0.35);
+        }
+
+        .badge small {
+            background: rgba(15,23,42,0.2);
+            padding: 1px 6px;
+            border-radius: 999px;
+            font-size: 10px;
+        }
+
+        /* BUTTONS */
 
         button {
             border: none;
             padding: 8px 14px;
             border-radius: 999px;
-            background: #2563eb;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
             color: #fff;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: background 0.15s ease, transform 0.05s ease;
+            transition: all 0.15s ease;
+            box-shadow: 0 6px 14px rgba(99,102,241,0.35);
         }
 
         button:hover {
-            background: #1d4ed8;
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 10px 24px rgba(99,102,241,0.45);
         }
 
         button:active {
-            transform: translateY(1px);
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(79,70,229,0.45);
         }
 
         button.secondary {
-            background: #e5e7eb;
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
             color: #111827;
+            box-shadow: 0 4px 10px rgba(148,163,184,0.45);
         }
 
         button.secondary:hover {
-            background: #d1d5db;
+            box-shadow: 0 8px 18px rgba(148,163,184,0.55);
         }
 
         .button-row {
@@ -97,44 +220,97 @@
             flex-wrap: wrap;
         }
 
+        /* TABLE */
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 12px;
             font-size: 14px;
+            border-radius: 14px;
+            overflow: hidden;
         }
 
         th, td {
-            padding: 8px 10px;
+            padding: 9px 12px;
             text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+        }
+
+        thead {
+            background: linear-gradient(90deg, #4f46e5, #ec4899);
+            color: #f9fafb;
         }
 
         th {
-            background: #f9fafb;
             font-weight: 600;
             font-size: 13px;
-            color: #6b7280;
         }
 
-        tr:hover td {
-            background: #f9fafb;
+        tbody tr:nth-child(odd) {
+            background: rgba(249,250,251,0.96);
         }
 
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
+        tbody tr:nth-child(even) {
+            background: rgba(239,246,255,0.96);
+        }
+
+        tbody tr:hover td {
+            background: rgba(254,242,242,0.9);
+            transition: background 0.12s ease;
+        }
+
+        td .salary-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
             border-radius: 999px;
-            font-size: 11px;
-            background: #eff6ff;
-            color: #1d4ed8;
+            background: rgba(22,163,74,0.08);
+            color: #15803d;
+            font-size: 13px;
         }
+
+        td .salary-chip span.dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: #22c55e;
+        }
+
+        td .delete-btn {
+            padding: 4px 10px;
+            font-size: 13px;
+            background: linear-gradient(135deg, #fb7185, #f97316);
+            box-shadow: 0 4px 10px rgba(248,113,113,0.5);
+        }
+
+        /* GRID FORM */
 
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
-            margin-top: 8px;
+            margin-top: 10px;
+        }
+
+        .panel {
+            padding: 10px 12px 12px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(226,232,240,0.9);
+            box-shadow: 0 10px 25px rgba(148,163,184,0.4);
+        }
+
+        .panel h4 {
+            margin: 0 0 8px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .panel h4 span {
+            font-size: 17px;
         }
 
         .field {
@@ -143,70 +319,82 @@
 
         label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 4px;
-            color: #4b5563;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         input {
             width: 100%;
-            padding: 7px 10px;
-            border-radius: 8px;
+            padding: 8px 11px;
+            border-radius: 10px;
             border: 1px solid #d1d5db;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            background: rgba(248,250,252,0.9);
+            transition: all 0.15s ease;
         }
 
         input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 1px rgba(129,140,248,0.6), 0 0 0 6px rgba(191,219,254,0.7);
+            background: #ffffff;
         }
 
+        /* STATUS BAR */
+
         .status-bar {
-            margin-top: 10px;
+            margin-top: 12px;
             font-size: 13px;
-            min-height: 18px;
+            min-height: 20px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15,23,42,0.02);
+        }
+
+        .status-bar::before {
+            content: "•";
+            font-size: 18px;
         }
 
         .status--success {
-            color: #15803d;
+            color: #166534;
+            background: rgba(22,163,74,0.08);
+        }
+        .status--success::before {
+            color: #22c55e;
         }
 
         .status--error {
             color: #b91c1c;
+            background: rgba(248,113,113,0.08);
+        }
+        .status--error::before {
+            color: #f97316;
         }
 
         .status--info {
-            color: #4b5563;
+            color: #0369a1;
+            background: rgba(59,130,246,0.08);
+        }
+        .status--info::before {
+            color: #38bdf8;
         }
 
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: #f9fafb;
-            font-size: 12px;
-            color: #6b7280;
-        }
+        /* PAGINATION */
 
-        .pill-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 999px;
-            background: #22c55e;
-        }
-
-        /* Pagination */
         .pagination {
             display: flex;
             justify-content: flex-end;
             align-items: center;
             gap: 6px;
-            margin-top: 12px;
-            font-size: 13px;
+            margin-top: 10px;
+            font-size: 12px;
         }
 
         .page-btn {
@@ -214,42 +402,53 @@
             padding: 5px 8px;
             border-radius: 999px;
             border: none;
-            background: #e5e7eb;
-            color: #111827;
+            background: rgba(15,23,42,0.06);
+            color: #0f172a;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
+            transition: all 0.12s ease;
+        }
+
+        .page-btn:hover {
+            background: rgba(59,130,246,0.15);
+            transform: translateY(-1px);
         }
 
         .page-btn.active {
-            background: #2563eb;
-            color: #fff;
-        }
-
-        .page-btn.disabled {
-            opacity: 0.4;
-            cursor: default;
+            background: linear-gradient(135deg, #6366f1, #22c55e);
+            color: #f9fafb;
+            box-shadow: 0 4px 10px rgba(79,70,229,0.55);
         }
 
         .page-ellipsis {
             padding: 0 4px;
-            color: #6b7280;
+            color: #4b5563;
         }
 
         @media (max-width: 640px) {
             .app-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 8px;
+                gap: 10px;
             }
         }
     </style>
 </head>
+
 <body>
 <div class="app-container">
     <header class="app-header">
-        <div>
-            <div class="app-title">Employee Web Service Demo</div>
-            <div class="subtitle">Đề CSW – get / add / update employee (Spring Boot + MySQL)</div>
+        <div class="app-title-block">
+            <div class="app-icon">
+                <span>👨‍💻</span>
+            </div>
+            <div class="app-title-text">
+                <div class="app-title">
+                    Employee Web Service
+                    <span class="tag">REST • JSON • MySQL</span>
+                </div>
+                <div class="subtitle">Đề CSW – Demo get / add / update / delete Employee</div>
+            </div>
         </div>
         <div class="pill">
             <span class="pill-dot"></span>
@@ -257,104 +456,114 @@
         </div>
     </header>
 
-    <!-- Danh sách nhân viên -->
+    <!-- DANH SÁCH NHÂN VIÊN -->
     <section class="card">
-        <div class="card-header">
-            <div class="card-title">Danh sách nhân viên</div>
-            <div class="button-row">
-                <button onclick="loadEmployees()">
-                    🔄 Tải danh sách
-                </button>
-                <button class="secondary" onclick="clearTable()">
-                    🧹 Xóa hiển thị
-                </button>
+        <div class="card-inner">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="emoji">📋</span>
+                    Danh sách nhân viên
+                </div>
+                <div class="button-row">
+                    <button onclick="loadEmployees()">🔄 Tải danh sách</button>
+                    <button class="secondary" onclick="clearTable()">🧹 Xóa hiển thị</button>
+                </div>
             </div>
-        </div>
 
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Tên nhân viên</th>
-                <th>Lương</th>
-            </tr>
-            </thead>
-            <tbody id="employee-table-body">
-            <tr>
-                <td colspan="3" style="text-align:center; color:#9ca3af; font-size:13px;">
-                    Chưa có dữ liệu – bấm “Tải danh sách”.
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên nhân viên</th>
+                    <th>Lương</th>
+                    <th>Xóa</th>
+                </tr>
+                </thead>
+                <tbody id="employee-table-body">
+                <tr>
+                    <td colspan="4" style="text-align:center; color:#9ca3af;">
+                        Chưa có dữ liệu – bấm “Tải danh sách”.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-        <!-- Phân trang -->
-        <div id="pagination" class="pagination"></div>
+            <div id="pagination" class="pagination"></div>
 
-        <div id="status-list" class="status-bar status--info">
-            Đang chờ thao tác…
+            <div id="status-list" class="status-bar status--info">
+                Đang chờ thao tác…
+            </div>
         </div>
     </section>
 
-    <!-- Form thêm / cập nhật -->
+    <!-- FORM THÊM / CẬP NHẬT -->
     <section class="card">
-        <div class="card-header">
-            <div class="card-title">Thêm / Cập nhật nhân viên</div>
-            <span class="badge">POST / PUT → /api/employees</span>
-        </div>
-
-        <div class="grid">
-            <!-- Form thêm -->
-            <div>
-                <h4 style="margin: 0 0 8px; font-size: 15px;">Thêm mới</h4>
-                <div class="field">
-                    <label for="add-id">ID *</label>
-                    <input id="add-id" type="number" placeholder="Ví dụ: 1" />
+        <div class="card-inner">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="emoji">⚙️</span>
+                    Thêm / Cập nhật nhân viên
                 </div>
-                <div class="field">
-                    <label for="add-name">Tên *</label>
-                    <input id="add-name" type="text" placeholder="Ví dụ: Nguyen Van A" />
-                </div>
-                <div class="field">
-                    <label for="add-salary">Lương *</label>
-                    <input id="add-salary" type="number" step="0.01" placeholder="Ví dụ: 1000" />
-                </div>
-                <button onclick="addEmployee()">➕ Thêm nhân viên</button>
+                <span class="badge">
+                    API
+                    <small>POST / PUT / DELETE /api/employees</small>
+                </span>
             </div>
 
-            <!-- Form cập nhật -->
-            <div>
-                <h4 style="margin: 0 0 8px; font-size: 15px;">Cập nhật</h4>
-                <div class="field">
-                    <label for="upd-id">ID cần sửa *</label>
-                    <input id="upd-id" type="number" placeholder="Nhập đúng ID đã tồn tại" />
-                </div>
-                <div class="field">
-                    <label for="upd-name">Tên mới *</label>
-                    <input id="upd-name" type="text" placeholder="Tên mới" />
-                </div>
-                <div class="field">
-                    <label for="upd-salary">Lương mới *</label>
-                    <input id="upd-salary" type="number" step="0.01" placeholder="Lương mới" />
-                </div>
-                <button onclick="updateEmployee()">✏️ Cập nhật nhân viên</button>
-            </div>
-        </div>
+            <div class="grid">
 
-        <div id="status-form" class="status-bar status--info">
-            Điền đầy đủ các trường * rồi bấm Thêm / Cập nhật.
+                <!-- FORM THÊM -->
+                <div class="panel">
+                    <h4><span>➕</span> Thêm mới</h4>
+                    <div class="field">
+                        <label for="add-id">ID *</label>
+                        <input id="add-id" type="number" placeholder="Ví dụ: 1" />
+                    </div>
+                    <div class="field">
+                        <label for="add-name">Tên *</label>
+                        <input id="add-name" type="text" placeholder="Ví dụ: Nguyen Van A" />
+                    </div>
+                    <div class="field">
+                        <label for="add-salary">Lương *</label>
+                        <input id="add-salary" type="number" step="0.01" placeholder="Ví dụ: 1000" />
+                    </div>
+                    <button onclick="addEmployee()">➕ Thêm nhân viên</button>
+                </div>
+
+                <!-- FORM CẬP NHẬT -->
+                <div class="panel">
+                    <h4><span>✏️</span> Cập nhật</h4>
+                    <div class="field">
+                        <label for="upd-id">ID cần sửa *</label>
+                        <input id="upd-id" type="number" placeholder="Nhập ID đã tồn tại" />
+                    </div>
+                    <div class="field">
+                        <label for="upd-name">Tên mới *</label>
+                        <input id="upd-name" type="text" placeholder="Tên mới" />
+                    </div>
+                    <div class="field">
+                        <label for="upd-salary">Lương mới *</label>
+                        <input id="upd-salary" type="number" step="0.01" placeholder="Lương mới" />
+                    </div>
+                    <button onclick="updateEmployee()">💾 Lưu cập nhật</button>
+                </div>
+
+            </div>
+
+            <div id="status-form" class="status-bar status--info">
+                Điền đầy đủ các trường * rồi bấm Thêm / Cập nhật.
+            </div>
         </div>
     </section>
 </div>
 
+
 <script>
     const baseUrl = '/api/employees';
-
-    // dữ liệu + cấu hình phân trang
     let employeesData = [];
     let currentPage = 1;
     const pageSize = 5;
-    const maxPageButtons = 3; // chỉ hiện 3 trang, sau đó là ...
+    const maxPageButtons = 3;
 
     function setStatusList(message, type = 'info') {
         const status = document.getElementById('status-list');
@@ -374,11 +583,11 @@
 
         if (!employeesData || employeesData.length === 0) {
             tbody.innerHTML = `
-      <tr>
-        <td colspan="3" style="text-align:center; color:#9ca3af; font-size:13px;">
-          Không có nhân viên nào trong hệ thống.
-        </td>
-      </tr>`;
+              <tr>
+                <td colspan="4" style="text-align:center; color:#9ca3af;">
+                  Không có nhân viên nào trong hệ thống.
+                </td>
+              </tr>`;
             document.getElementById('pagination').innerHTML = '';
             return;
         }
@@ -392,32 +601,41 @@
         const endIndex = startIndex + pageSize;
         const pageItems = employeesData.slice(startIndex, endIndex);
 
-        // các dòng có dữ liệu
         pageItems.forEach(emp => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-      <td>${emp.id}</td>
-      <td>${emp.name}</td>
-      <td>${emp.salary}</td>
-    `;
+                <td>${emp.id}</td>
+                <td>${emp.name}</td>
+                <td>
+                    <span class="salary-chip">
+                        <span class="dot"></span>
+                        ${emp.salary}
+                    </span>
+                </td>
+                <td>
+                    <button class="delete-btn"
+                            onclick="deleteEmployee(${emp.id})">
+                        🗑 Xóa
+                    </button>
+                </td>
+            `;
             tbody.appendChild(tr);
         });
 
-        // đệm thêm dòng trống để luôn đủ 5 dòng / trang
         const remaining = pageSize - pageItems.length;
         for (let i = 0; i < remaining; i++) {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-      <td style="height:32px; color:transparent;">•</td>
-      <td style="color:transparent;">•</td>
-      <td style="color:transparent;">•</td>
-    `;
+                <td style="color:transparent;">•</td>
+                <td style="color:transparent;">•</td>
+                <td style="color:transparent;">•</td>
+                <td style="color:transparent;">•</td>
+            `;
             tbody.appendChild(tr);
         }
 
         renderPagination(totalPages);
     }
-
 
     function renderPagination(totalPages) {
         const container = document.getElementById('pagination');
@@ -430,18 +648,12 @@
             btn.textContent = label;
             btn.className = 'page-btn';
             if (options.active) btn.classList.add('active');
-            if (options.disabled) {
-                btn.classList.add('disabled');
-            } else {
-                btn.addEventListener('click', () => renderEmployees(page));
-            }
+            btn.addEventListener('click', () => renderEmployees(page));
             container.appendChild(btn);
         };
 
-        // nút Prev
-        createBtn('«', currentPage - 1, { disabled: currentPage === 1 });
+        createBtn('«', Math.max(1, currentPage - 1));
 
-        const totalBlocks = Math.ceil(totalPages / maxPageButtons);
         const currentBlock = Math.floor((currentPage - 1) / maxPageButtons);
         const blockStart = currentBlock * maxPageButtons + 1;
         const blockEnd = Math.min(blockStart + maxPageButtons - 1, totalPages);
@@ -464,17 +676,16 @@
             container.appendChild(ellipsisNext);
         }
 
-        // nút Next
-        createBtn('»', currentPage + 1, { disabled: currentPage === totalPages });
+        createBtn('»', Math.min(totalPages, currentPage + 1));
     }
 
     function clearTable() {
         document.getElementById('employee-table-body').innerHTML = `
-      <tr>
-        <td colspan="3" style="text-align:center; color:#9ca3af; font-size:13px;">
-          Đã xóa dữ liệu hiển thị – bấm “Tải danh sách” để xem lại.
-        </td>
-      </tr>`;
+            <tr>
+              <td colspan="4" style="text-align:center; color:#9ca3af;">
+                Đã xóa dữ liệu hiển thị – bấm “Tải danh sách” để xem lại.
+              </td>
+            </tr>`;
         document.getElementById('pagination').innerHTML = '';
         setStatusList('Đã xóa dữ liệu trên UI, không ảnh hưởng tới database.', 'info');
     }
@@ -508,8 +719,8 @@
         }
 
         const body = { id, name, salary };
-
         setStatusForm('Đang thêm nhân viên…', 'info');
+
         fetch(baseUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -540,8 +751,8 @@
         }
 
         const body = { id, name, salary };
-
         setStatusForm('Đang cập nhật nhân viên…', 'info');
+
         fetch(baseUrl + '/' + id, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -560,6 +771,26 @@
                 setStatusForm('Lỗi khi cập nhật nhân viên: ' + err.message, 'error');
             });
     }
+
+    function deleteEmployee(id) {
+        if (!confirm("Bạn có chắc muốn xóa nhân viên ID = " + id + " ?")) {
+            return;
+        }
+
+        fetch(baseUrl + '/' + id, {
+            method: 'DELETE'
+        })
+            .then(r => {
+                if (!r.ok) return r.text().then(t => { throw new Error(t || 'HTTP ' + r.status); });
+                setStatusList("Đã xóa nhân viên ID = " + id, "success");
+                loadEmployees();
+            })
+            .catch(err => {
+                console.error(err);
+                setStatusList("Lỗi khi xoá nhân viên: " + err.message, "error");
+            });
+    }
 </script>
+
 </body>
 </html>
