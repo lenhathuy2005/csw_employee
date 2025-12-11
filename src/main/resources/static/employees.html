@@ -199,6 +199,42 @@
             background: #22c55e;
         }
 
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .page-btn {
+            min-width: 28px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            border: none;
+            background: #e5e7eb;
+            color: #111827;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .page-btn.active {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .page-ellipsis {
+            padding: 0 4px;
+            color: #6b7280;
+        }
+
         @media (max-width: 640px) {
             .app-header {
                 flex-direction: column;
@@ -251,6 +287,9 @@
             </tr>
             </tbody>
         </table>
+
+        <!-- Phân trang -->
+        <div id="pagination" class="pagination"></div>
 
         <div id="status-list" class="status-bar status--info">
             Đang chờ thao tác…
@@ -311,6 +350,12 @@
 <script>
     const baseUrl = '/api/employees';
 
+    // dữ liệu + cấu hình phân trang
+    let employeesData = [];
+    let currentPage = 1;
+    const pageSize = 5;
+    const maxPageButtons = 3; // chỉ hiện 3 trang, sau đó là ...
+
     function setStatusList(message, type = 'info') {
         const status = document.getElementById('status-list');
         status.textContent = message;
@@ -323,29 +368,104 @@
         status.className = 'status-bar status--' + type;
     }
 
-    function renderEmployees(data) {
+    function renderEmployees(page = 1) {
         const tbody = document.getElementById('employee-table-body');
         tbody.innerHTML = '';
 
-        if (!data || data.length === 0) {
+        if (!employeesData || employeesData.length === 0) {
             tbody.innerHTML = `
-        <tr>
-          <td colspan="3" style="text-align:center; color:#9ca3af; font-size:13px;">
-            Không có nhân viên nào trong hệ thống.
-          </td>
-        </tr>`;
+      <tr>
+        <td colspan="3" style="text-align:center; color:#9ca3af; font-size:13px;">
+          Không có nhân viên nào trong hệ thống.
+        </td>
+      </tr>`;
+            document.getElementById('pagination').innerHTML = '';
             return;
         }
 
-        data.forEach(emp => {
+        const totalPages = Math.ceil(employeesData.length / pageSize);
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+        currentPage = page;
+
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const pageItems = employeesData.slice(startIndex, endIndex);
+
+        // các dòng có dữ liệu
+        pageItems.forEach(emp => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-        <td>${emp.id}</td>
-        <td>${emp.name}</td>
-        <td>${emp.salary}</td>
-      `;
+      <td>${emp.id}</td>
+      <td>${emp.name}</td>
+      <td>${emp.salary}</td>
+    `;
             tbody.appendChild(tr);
         });
+
+        // đệm thêm dòng trống để luôn đủ 5 dòng / trang
+        const remaining = pageSize - pageItems.length;
+        for (let i = 0; i < remaining; i++) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+      <td style="height:32px; color:transparent;">•</td>
+      <td style="color:transparent;">•</td>
+      <td style="color:transparent;">•</td>
+    `;
+            tbody.appendChild(tr);
+        }
+
+        renderPagination(totalPages);
+    }
+
+
+    function renderPagination(totalPages) {
+        const container = document.getElementById('pagination');
+        container.innerHTML = '';
+
+        if (!totalPages || totalPages <= 1) return;
+
+        const createBtn = (label, page, options = {}) => {
+            const btn = document.createElement('button');
+            btn.textContent = label;
+            btn.className = 'page-btn';
+            if (options.active) btn.classList.add('active');
+            if (options.disabled) {
+                btn.classList.add('disabled');
+            } else {
+                btn.addEventListener('click', () => renderEmployees(page));
+            }
+            container.appendChild(btn);
+        };
+
+        // nút Prev
+        createBtn('«', currentPage - 1, { disabled: currentPage === 1 });
+
+        const totalBlocks = Math.ceil(totalPages / maxPageButtons);
+        const currentBlock = Math.floor((currentPage - 1) / maxPageButtons);
+        const blockStart = currentBlock * maxPageButtons + 1;
+        const blockEnd = Math.min(blockStart + maxPageButtons - 1, totalPages);
+
+        if (blockStart > 1) {
+            const ellipsisPrev = document.createElement('span');
+            ellipsisPrev.textContent = '...';
+            ellipsisPrev.className = 'page-ellipsis';
+            container.appendChild(ellipsisPrev);
+        }
+
+        for (let p = blockStart; p <= blockEnd; p++) {
+            createBtn(String(p), p, { active: p === currentPage });
+        }
+
+        if (blockEnd < totalPages) {
+            const ellipsisNext = document.createElement('span');
+            ellipsisNext.textContent = '...';
+            ellipsisNext.className = 'page-ellipsis';
+            container.appendChild(ellipsisNext);
+        }
+
+        // nút Next
+        createBtn('»', currentPage + 1, { disabled: currentPage === totalPages });
     }
 
     function clearTable() {
@@ -355,6 +475,7 @@
           Đã xóa dữ liệu hiển thị – bấm “Tải danh sách” để xem lại.
         </td>
       </tr>`;
+        document.getElementById('pagination').innerHTML = '';
         setStatusList('Đã xóa dữ liệu trên UI, không ảnh hưởng tới database.', 'info');
     }
 
@@ -366,8 +487,9 @@
                 return r.json();
             })
             .then(data => {
-                renderEmployees(data);
-                setStatusList('Tải danh sách thành công (' + data.length + ' nhân viên).', 'success');
+                employeesData = data || [];
+                renderEmployees(1);
+                setStatusList('Tải danh sách thành công (' + employeesData.length + ' nhân viên).', 'success');
             })
             .catch(err => {
                 console.error(err);
