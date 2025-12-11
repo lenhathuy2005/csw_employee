@@ -17,20 +17,17 @@ public class EmployeeController {
         this.service = service;
     }
 
-    // GET /api/employees  -> getEmployees
     @GetMapping
     public List<Employee> getAllEmployees() {
         return service.getEmployees();
     }
 
-    // POST /api/employees -> addEmployees
     @PostMapping
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee e) {
         Employee saved = service.addEmployee(e);
         return ResponseEntity.ok(saved);
     }
 
-    // PUT /api/employees/{id} -> updateEmployee
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(
             @PathVariable Long id,
