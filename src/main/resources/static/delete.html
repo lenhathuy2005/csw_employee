@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Xóa nhân viên</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 40px;
+        }
+        .card {
+            max-width: 450px;
+            margin: auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #4b5563;
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #dc2626;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #b91c1c;
+        }
+        .status {
+            margin-top: 12px;
+            min-height: 20px;
+            font-size: 14px;
+        }
+        .success { color: #15803d; }
+        .error { color: #b91c1c; }
+    </style>
+</head>
+<body>
 
+<div class="card">
+    <h2>Xóa nhân viên</h2>
+
+    <label for="delete-id">Nhập ID nhân viên cần xóa:</label>
+    <input id="delete-id" type="number" placeholder="Ví dụ: 5" />
+
+    <button class="btn" onclick="deleteEmployee()">🗑 Xóa nhân viên</button>
+
+    <div id="status" class="status"></div>
+
+    <p style="margin-top:20px; text-align:center;">
+        <a href="employees.html">⬅ Quay lại danh sách</a>
+    </p>
+</div>
+
+<script>
+    const baseUrl = "/api/employees";
+
+    function setStatus(message, type="") {
+        const s = document.getElementById('status');
+        s.textContent = message;
+        s.className = "status " + type;
+    }
+
+    function deleteEmployee() {
+        const id = document.getElementById("delete-id").value;
+        if (!id) {
+            setStatus("Vui lòng nhập ID", "error");
+            return;
+        }
+
+        if (!confirm("Bạn chắc chắn muốn xóa nhân viên ID = " + id + " ?")) {
+            return;
+        }
+
+        fetch(baseUrl + "/" + id, {
+            method: "DELETE"
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                setStatus("Đã xóa nhân viên ID = " + id, "success");
+            })
+            .catch(err => {
+                setStatus("Lỗi khi xóa: " + err.message, "error");
+            });
+    }
+</script>
+
+</body>
+</html>
