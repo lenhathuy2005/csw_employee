@@ -17,17 +17,20 @@ public class EmployeeController {
         this.service = service;
     }
 
+    // GET /api/employees  -> getEmployees
     @GetMapping
     public List<Employee> getAllEmployees() {
         return service.getEmployees();
     }
 
+    // POST /api/employees -> addEmployees
     @PostMapping
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee e) {
         Employee saved = service.addEmployee(e);
         return ResponseEntity.ok(saved);
     }
 
+    // PUT /api/employees/{id} -> updateEmployee
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(
             @PathVariable Long id,
@@ -36,5 +39,14 @@ public class EmployeeController {
         e.setId(id);
         Employee updated = service.updateEmployee(e);
         return ResponseEntity.ok(updated);
+    }
+
+    // 🔥 DELETE /api/employees/{id} -> deleteEmployee
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        service.deleteEmployee(id);
+        // 200 OK, không body
+        return ResponseEntity.ok().build();
+        // cũng có thể dùng: return ResponseEntity.noContent().build();
     }
 }
